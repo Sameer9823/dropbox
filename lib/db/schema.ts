@@ -33,3 +33,25 @@ export const files = pgTable("files", {
   createdAt: timestamp("created_at").notNull().defaultNow(), // timestamp
   updatedAt: timestamp("updated_at").notNull().defaultNow(), // timestamp
 });
+
+/**
+ * parent: Each file/folder can have one parent folder
+ * 
+ * children: Each folder can have many child files/folder
+ */
+
+export const filesRelations = relations(files, ({one, many}) => ({
+   parent: one(files, {
+        fields: [files.parentId],
+        references: [files.id],
+   }),
+
+
+   children: many(files)
+}))
+
+
+//Type definitions
+
+export const File = typeof files.$inferSelect;
+export const NewFile = typeof files.$inferInsert;
